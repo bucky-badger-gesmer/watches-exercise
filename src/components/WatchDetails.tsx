@@ -3,6 +3,7 @@ import { Button } from "antd";
 import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 import {
+  formatToPercentage,
   getCurrentDateFormatted,
   getDateDaysAgo,
   getDaysAgo,
@@ -22,6 +23,7 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
   const [xAxisCategories, setXAxisCategories] = useState([]);
   const [chartColor, setChartColor] = useState("#00FF00");
   const [data, setData] = useState([]);
+  const [percentageText, setPercentageText] = useState("");
 
   useEffect(() => {
     const days = getDaysAgo(timeframe);
@@ -39,10 +41,29 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
     )
       .then((response) => response.json())
       .then((response) => {
-        const xAxisCategories = response[0].daily_analytics;
+        const xAxisCategories = response[0].daily_analytics.map(
+          (o: any) => o.related_day
+        );
+        console.log("xAxisCategories", xAxisCategories);
         const data = response[0].daily_analytics.map((o: any) => o.price);
+        const currentAnalytics = Object.keys(response[0].global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const globalAnalytics =
+          response[0].global_analytics[currentAnalytics as string];
+        const color =
+          globalAnalytics.close - globalAnalytics.open < 0
+            ? "#FF0000"
+            : "#00FF00";
+        const percentage =
+          (globalAnalytics.close - globalAnalytics.open) / globalAnalytics.open;
+        const formatPercentage = formatToPercentage(percentage);
+        console.log("percent", formatPercentage);
+
         setXAxisCategories(xAxisCategories);
         setData(data);
+        setChartColor(color);
+        setPercentageText(formatPercentage);
       })
       .catch((err) => {});
   }, []);
@@ -66,8 +87,23 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
       .then((response) => {
         const xAxisCategories = response[0].daily_analytics;
         const data = response[0].daily_analytics.map((o: any) => o.price);
+        const currentAnalytics = Object.keys(response[0].global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const globalAnalytics =
+          response[0].global_analytics[currentAnalytics as string];
+        const color =
+          globalAnalytics.close - globalAnalytics.open < 0
+            ? "#FF0000"
+            : "#00FF00";
+        const percentage =
+          (globalAnalytics.close - globalAnalytics.open) / globalAnalytics.open;
+        const formatPercentage = formatToPercentage(percentage);
+        console.log("percent", formatPercentage);
         setXAxisCategories(xAxisCategories);
         setData(data);
+        setChartColor(color);
+        setPercentageText(formatPercentage);
       })
       .catch((err) => {});
   };
@@ -103,6 +139,7 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
         <div className="detailsChartHeader">
           <div className="detailsPrice">
             <h3>{watchData.global_analytics.analytics_1d.close}</h3>
+            <h2 style={{ color: chartColor }}>{percentageText}</h2>
           </div>
           <ul className="timeFilter">
             <li
@@ -180,7 +217,7 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               size: 0, // Hides markers
             },
             tooltip: {
-              enabled: false,
+              enabled: true,
             },
             colors: [chartColor],
             xaxis: {
