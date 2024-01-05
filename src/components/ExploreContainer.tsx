@@ -1,7 +1,8 @@
 import { IonTitle } from "@ionic/react";
-import { ConfigProvider, Table, theme } from "antd";
+import { ConfigProvider, Table, Tag, theme } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
+import ApexCharts from "react-apexcharts";
 import Dropdown from "./Dropdown";
 import "./ExploreContainer.css";
 
@@ -24,10 +25,6 @@ interface ContainerProps {}
 const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
   const [watchIds, setWatchIds] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const [timeframe, setTimeframe] = useState("1M");
 
   const columns: ColumnsType<DataType> = [
@@ -71,10 +68,12 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         return parseFloat(_a.open as string) - parseFloat(_b.open as string);
       },
       render: (global_analytics) => {
-        const currentAnalytics = Object.keys(global_analytics).find(
-          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        // 1 day close
+        return (
+          <Tag color="gold-inverse">
+            {formatUSD(parseFloat(global_analytics.analytics_1d.close))}
+          </Tag>
         );
-        return global_analytics[currentAnalytics as string].open;
       },
     },
     {
@@ -93,7 +92,10 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         const currentAnalytics = Object.keys(global_analytics).find(
           (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
         );
-        return global_analytics[currentAnalytics as string].low;
+
+        return formatUSD(
+          parseFloat(global_analytics[currentAnalytics as string].low)
+        );
       },
     },
     {
@@ -112,7 +114,9 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         const currentAnalytics = Object.keys(global_analytics).find(
           (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
         );
-        return global_analytics[currentAnalytics as string].high;
+        return formatUSD(
+          parseFloat(global_analytics[currentAnalytics as string].high)
+        );
       },
     },
     {
@@ -137,6 +141,60 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
       title: "Chart",
       dataIndex: "percent",
       key: "percent",
+      render: () => {
+        const poop = localStorage.getItem(
+          "00b64cc1-d10e-4492-a219-bdb33f2bfa30"
+        );
+        console.log("poop", JSON.parse(poop as string));
+
+        return (
+          <ApexCharts
+            options={{
+              chart: {
+                id: "basic-line",
+                toolbar: {
+                  show: false,
+                },
+                zoom: {
+                  enabled: false, // Disables zooming
+                },
+                foreColor: "red",
+              },
+              grid: {
+                show: false,
+              },
+              markers: {
+                size: 0, // Hides markers
+              },
+              tooltip: {
+                enabled: false,
+              },
+              colors: ["#00FF00"],
+              xaxis: {
+                categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997],
+                labels: {
+                  show: false,
+                },
+                axisTicks: {
+                  show: false,
+                },
+                crosshairs: {
+                  show: false,
+                },
+              },
+              yaxis: {
+                show: false,
+              },
+            }}
+            series={[
+              {
+                name: "series-1",
+                data: [30, 40, 45, 50, 49, 60, 70],
+              },
+            ]}
+          />
+        );
+      },
     },
   ];
 
@@ -157,8 +215,9 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
           }
           throw response;
         })
-        .then((data) => {
+        .then((data: any) => {
           const ids = data.map((o: any) => o.id);
+          localStorage.setItem("watchData", JSON.stringify(data));
           setData(data);
           setWatchIds(ids);
         });
@@ -196,6 +255,14 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     // Make API calls for each ID
     Promise.all(watchIds.map((id) => fetchDataForWatchId(id)));
   }, [watchIds]);
+
+  const formatUSD = (amount: number): string => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      // You can add more options as needed
+    }).format(amount);
+  };
 
   return (
     <div className="container">
