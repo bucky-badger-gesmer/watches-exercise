@@ -120,22 +120,59 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
       },
     },
     {
+      // respective timeframe close - open
       title: "+/- Change",
-      dataIndex: "change",
+      dataIndex: "global_analytics",
       key: "change",
-      // sorter: (a, b) => {
-      //   const currentAnalytics = Object.keys(a.global_analytics).find(
-      //     (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
-      //   );
-      //   const _a = a.global_analytics[currentAnalytics as string];
-      //   const _b = b.global_analytics[currentAnalytics as string];
-      //   return parseFloat(_a.open as string) - parseFloat(_b.open as string);
-      // },
+      sorter: (a, b) => {
+        const currentAnalytics = Object.keys(a.global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const _a = a.global_analytics[currentAnalytics as string];
+        const _b = b.global_analytics[currentAnalytics as string];
+        const result =
+          parseFloat(_a.close) -
+          parseFloat(_a.open) -
+          (parseFloat(_b.close) - parseFloat(_b.open));
+        return result;
+      },
+      render: (global_analytics) => {
+        const currentAnalytics = Object.keys(global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const timeframeAnalytics = global_analytics[currentAnalytics as string];
+        const result = formatUSD(
+          parseFloat(timeframeAnalytics.close) -
+            parseFloat(timeframeAnalytics.open)
+        );
+        const changeColor =
+          parseFloat(timeframeAnalytics.close) -
+            parseFloat(timeframeAnalytics.open) <
+          0
+            ? "red"
+            : "green";
+
+        return <strong style={{ color: changeColor }}>{result}</strong>;
+      },
     },
     {
+      // respective timeframe (close - open) / open
       title: "Percent",
-      dataIndex: "percent",
+      dataIndex: "global_analytics",
       key: "percent",
+      render: (global_analytics) => {
+        const currentAnalytics = Object.keys(global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const timeframeAnalytics = global_analytics[currentAnalytics as string];
+        const result =
+          (parseFloat(timeframeAnalytics.close) -
+            parseFloat(timeframeAnalytics.open)) /
+          parseFloat(timeframeAnalytics.open);
+
+        const tagColor = result < 0 ? "red" : "green";
+        return <Tag color={tagColor}>{formatToPercentage(result)}</Tag>;
+      },
     },
     {
       title: "Chart",
@@ -145,7 +182,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         const poop = localStorage.getItem(
           "00b64cc1-d10e-4492-a219-bdb33f2bfa30"
         );
-        console.log("poop", JSON.parse(poop as string));
+        // console.log("poop", JSON.parse(poop as string));
 
         return (
           <ApexCharts
@@ -262,6 +299,11 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
       currency: "USD",
       // You can add more options as needed
     }).format(amount);
+  };
+
+  const formatToPercentage = (value: number): string => {
+    const percentage = (value * 100).toFixed(2);
+    return `${percentage}%`;
   };
 
   return (
