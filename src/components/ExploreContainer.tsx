@@ -160,6 +160,16 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
       title: "Percent",
       dataIndex: "global_analytics",
       key: "percent",
+      sorter: (a, b) => {
+        const currentAnalytics = Object.keys(a.global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
+        );
+        const _a = a.global_analytics[currentAnalytics as string];
+        const _b = b.global_analytics[currentAnalytics as string];
+        const result =
+          (_a.close - _a.open) / _a.open - (_b.close - _b.open) / _b.open;
+        return result;
+      },
       render: (global_analytics) => {
         const currentAnalytics = Object.keys(global_analytics).find(
           (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
