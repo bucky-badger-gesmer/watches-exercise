@@ -46,3 +46,14 @@
     }
   }
 }
+
+.detailsContainer {
+  display: flex;
+
+  .details {
+    width: 50%;
+  }
+  .detailsChart {
+    width: 50%;
+  }
+}

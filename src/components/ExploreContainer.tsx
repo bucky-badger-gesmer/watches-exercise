@@ -18,6 +18,7 @@ interface DataType {
   percent: string;
   chart: string;
   global_analytics: any;
+  id: string;
 }
 
 interface ContainerProps {}
@@ -288,7 +289,13 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         .then((data: any) => {
           const ids = data.map((o: any) => o.id);
           localStorage.setItem("watchData", JSON.stringify(data));
-          setData(data);
+          const mappedData = data.map((o: any, i: number) => {
+            return {
+              ...o,
+              key: i,
+            };
+          });
+          setData(mappedData);
           setWatchIds(ids);
         });
 
@@ -468,7 +475,18 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               expandedRowKeys: expandedRowKeys,
               onExpand: onExpand,
               expandedRowRender: (record) => {
-                return null;
+                const item = localStorage.getItem(record.id);
+                if (item === null) {
+                  throw new Error("oh no");
+                }
+                const watchData = JSON.parse(item);
+                console.log("watchData", watchData);
+                return (
+                  <div className="detailsContainer">
+                    <div className="details">Details</div>
+                    <div className="detailsChart">Chart</div>
+                  </div>
+                );
               },
               // rowExpandable: (record) => {
               //   return true;
