@@ -20,10 +20,32 @@
       }
 
       .priceInfo {
+        margin-top: "500px";
       }
     }
   }
-  .detailsChart {
+  .detailsChartContainer {
     width: 50%;
+
+    .detailsChartHeader {
+      display: flex;
+      justify-content: space-between;
+      .detailsPrice {
+      }
+
+      .timeFilter {
+        display: flex;
+        list-style: none;
+
+        li {
+          margin-left: 5px;
+          margin-right: 5px;
+        }
+
+        li:hover {
+          cursor: pointer;
+        }
+      }
+    }
   }
 }

@@ -7,7 +7,6 @@ const Dropdown: React.FC = () => {
   const [count, setCount] = useState<number>(0);
 
   const handleSelectChange = (value: string[]) => {
-    console.log("value", value);
     setCount(count + 1);
   };
 
