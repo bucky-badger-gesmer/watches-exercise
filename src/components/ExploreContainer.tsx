@@ -26,6 +26,14 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
   const [watchIds, setWatchIds] = useState([]);
   const [timeframe, setTimeframe] = useState("1M");
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+
+  const onExpand = (expanded: boolean, record: DataType) => {
+    const keys = expanded
+      ? [...expandedRowKeys, record.key]
+      : expandedRowKeys.filter((key) => key !== record.key);
+    setExpandedRowKeys(keys);
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -121,7 +129,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     },
     {
       // respective timeframe close - open
-      title: "+/- Change",
+      title: "+/-Change",
       dataIndex: "global_analytics",
       key: "change",
       sorter: (a, b) => {
@@ -208,7 +216,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         const result = JSON.parse(item);
         const xAxisCategories = result.daily_analytics; // just need to reverse order
         const data = result.daily_analytics.map((o: any) => o.price);
-        console.log("data", data);
 
         return (
           <ApexCharts
@@ -300,8 +307,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
         const today = getCurrentDateFormatted();
         const daysAgo = getDaysAgo();
         const startDate = getDateDaysAgo(daysAgo);
-        console.log("startDate", startDate);
-        console.log("today", today);
         const response = await fetch(
           `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${startDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,
           {
@@ -460,8 +465,9 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
             rowSelection={{}}
             expandable={{
               expandRowByClick: true,
+              expandedRowKeys: expandedRowKeys,
+              onExpand: onExpand,
               expandedRowRender: (record) => {
-                // console.log("record", record);
                 return null;
               },
               // rowExpandable: (record) => {
