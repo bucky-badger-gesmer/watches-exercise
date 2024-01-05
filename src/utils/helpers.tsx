@@ -49,3 +49,11 @@ export const formatToPercentage = (value: number): string => {
   const percentage = (value * 100).toFixed(2);
   return `${percentage}%`;
 };
+
+export const formatUSD = (amount: number): string => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    // You can add more options as needed
+  }).format(amount);
+};

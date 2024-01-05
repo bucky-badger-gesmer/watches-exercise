@@ -4,6 +4,7 @@
   .details {
     display: flex;
     width: 50%;
+    margin: 10px;
 
     .detailsData {
       width: 100%;
@@ -21,11 +22,17 @@
 
       .priceInfo {
         margin-top: "500px";
+
+        .priceRangeContainer {
+          display: flex;
+          justify-content: space-between;
+        }
       }
     }
   }
   .detailsChartContainer {
     width: 50%;
+    padding: 10px;
 
     .detailsChartHeader {
       display: flex;

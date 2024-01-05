@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 import {
   formatToPercentage,
+  formatUSD,
   getCurrentDateFormatted,
   getDateDaysAgo,
   getDaysAgo,
@@ -24,6 +25,10 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
   const [chartColor, setChartColor] = useState("#00FF00");
   const [data, setData] = useState([]);
   const [percentageText, setPercentageText] = useState("");
+  const [lowPrice, setLowPrice] = useState(0);
+  const [highPrice, setHighPrice] = useState(0);
+  const [openPrice, setOpenPrice] = useState(0);
+  const [closePrice, setClosePrice] = useState(0);
 
   useEffect(() => {
     const days = getDaysAgo(timeframe);
@@ -62,6 +67,10 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
         setData(data);
         setChartColor(color);
         setPercentageText(formatPercentage);
+        setLowPrice(globalAnalytics.low);
+        setHighPrice(globalAnalytics.high);
+        setOpenPrice(globalAnalytics.open);
+        setClosePrice(globalAnalytics.close);
       })
       .catch((err) => {});
   }, []);
@@ -102,6 +111,10 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
         setData(data);
         setChartColor(color);
         setPercentageText(formatPercentage);
+        setLowPrice(globalAnalytics.low);
+        setHighPrice(globalAnalytics.high);
+        setOpenPrice(globalAnalytics.open);
+        setClosePrice(globalAnalytics.close);
       })
       .catch((err) => {});
   };
@@ -129,7 +142,25 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
             </div>
           </div>
           <div className="priceInfo">
-            <Button style={{ width: "100%", marginTop: 200 }}>Details</Button>
+            <div className="priceRangeContainer">
+              <div className="priceLow">
+                <p>Low</p>
+                <h2>{formatUSD(lowPrice)}</h2>
+              </div>
+              <div className="priceHigh">
+                <p>High</p>
+                <h2>{formatUSD(highPrice)}</h2>
+              </div>
+            </div>
+            <div>
+              <p>+/- Change</p>
+              <h2>
+                {closePrice - openPrice < 0
+                  ? "-"
+                  : "+" + formatUSD(closePrice - openPrice)}
+              </h2>
+            </div>
+            <Button style={{ width: "100%", marginTop: 150 }}>Details</Button>
           </div>
         </div>
       </div>

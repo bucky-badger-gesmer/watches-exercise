@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 import {
   formatToPercentage,
+  formatUSD,
   getCurrentDateFormatted,
   getDateDaysAgo,
   getDaysAgo,
@@ -342,14 +343,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     // Make API calls for each ID
     Promise.all(watchIds.map((id) => fetchDataForWatchId(id)));
   }, [watchIds]);
-
-  const formatUSD = (amount: number): string => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      // You can add more options as needed
-    }).format(amount);
-  };
 
   const handleSetTimeFrame = (timeframe: string): void => {
     setTimeframe(timeframe);
