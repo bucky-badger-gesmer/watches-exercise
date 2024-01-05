@@ -1,0 +1,23 @@
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+
+  .navContainer {
+    display: flex;
+    list-style: none;
+
+    li {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    li:hover {
+      cursor: pointer;
+    }
+
+    .explore {
+      text-decoration: underline;
+    }
+  }
+}
