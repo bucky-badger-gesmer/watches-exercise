@@ -23,6 +23,8 @@ interface ContainerProps {}
 
 const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
+  const [watchIds, setWatchIds] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -141,33 +143,59 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   useEffect(() => {
     const url =
       "https://api-dev.horodex.io/watch_data/api/v1/watches/search/suggested";
-    const token = import.meta.env.VITE_TOKEN;
 
-    fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
+    try {
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+          "Content-Type": "application/json",
+        },
       })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw response;
+        })
+        .then((data) => {
+          const ids = data.map((o: any) => o.id);
+          setData(data);
+          setWatchIds(ids);
+        });
+
+      // Handle the fetched data
+    } catch (error) {
+      // Handle errors
+    }
   }, []);
 
-  console.log("POOP", timeframe);
+  useEffect(() => {
+    if (watchIds.length === 0) return;
+
+    // Function to fetch data for a given ID, write it local storage
+    const fetchDataForWatchId = async (id: string) => {
+      try {
+        const response = await fetch(
+          `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=2023-05-01&end=2023-08-01&limit=-1&page=-1&orderBy=related_day&direction=asc`,
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        localStorage.setItem(data[0].watch.id, JSON.stringify(data[0]));
+        return data;
+      } catch (error) {
+        console.error("Error fetching data for ID:", id, error);
+        return null;
+      }
+    };
+
+    // Make API calls for each ID
+    Promise.all(watchIds.map((id) => fetchDataForWatchId(id)));
+  }, [watchIds]);
 
   return (
     <div className="container">
@@ -245,11 +273,10 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
             expandable={{
               expandRowByClick: true,
               expandedRowRender: (record) => {
-                console.log("record", record);
+                // console.log("record", record);
                 return null;
               },
               // rowExpandable: (record) => {
-              //   console.log("poop record", record);
               //   return true;
               // },
             }}
