@@ -186,13 +186,29 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     },
     {
       title: "Chart",
-      dataIndex: "percent",
-      key: "percent",
-      render: () => {
-        const poop = localStorage.getItem(
-          "00b64cc1-d10e-4492-a219-bdb33f2bfa30"
+      dataIndex: "global_analytics",
+      key: "chart",
+      render: (global_analytics) => {
+        const currentAnalytics = Object.keys(global_analytics).find(
+          (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
         );
-        // console.log("poop", JSON.parse(poop as string));
+        const timeframeAnalytics = global_analytics[currentAnalytics as string];
+        const resultForColor =
+          (parseFloat(timeframeAnalytics.close) -
+            parseFloat(timeframeAnalytics.open)) /
+          parseFloat(timeframeAnalytics.open);
+
+        const chartColor = resultForColor < 0 ? "#FF0000" : "#00FF00";
+
+        const item = localStorage.getItem(global_analytics.watch_id);
+        if (item === null) {
+          throw new Error("NO");
+        }
+
+        const result = JSON.parse(item);
+        const xAxisCategories = result.daily_analytics; // just need to reverse order
+        const data = result.daily_analytics.map((o: any) => o.price);
+        console.log("data", data);
 
         return (
           <ApexCharts
@@ -216,9 +232,9 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               tooltip: {
                 enabled: false,
               },
-              colors: ["#00FF00"],
+              colors: [chartColor],
               xaxis: {
-                categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997],
+                categories: xAxisCategories,
                 labels: {
                   show: false,
                 },
@@ -236,7 +252,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
             series={[
               {
                 name: "series-1",
-                data: [30, 40, 45, 50, 49, 60, 70],
+                data: data,
               },
             ]}
           />
@@ -281,8 +297,13 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     // Function to fetch data for a given ID, write it local storage
     const fetchDataForWatchId = async (id: string) => {
       try {
+        const today = getCurrentDateFormatted();
+        const daysAgo = getDaysAgo();
+        const startDate = getDateDaysAgo(daysAgo);
+        console.log("startDate", startDate);
+        console.log("today", today);
         const response = await fetch(
-          `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=2023-05-01&end=2023-08-01&limit=-1&page=-1&orderBy=related_day&direction=asc`,
+          `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${startDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
@@ -301,7 +322,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
 
     // Make API calls for each ID
     Promise.all(watchIds.map((id) => fetchDataForWatchId(id)));
-  }, [watchIds]);
+  }, [watchIds, timeframe]);
 
   const formatUSD = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -314,6 +335,53 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const formatToPercentage = (value: number): string => {
     const percentage = (value * 100).toFixed(2);
     return `${percentage}%`;
+  };
+
+  const getCurrentDateFormatted = (): string => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; // Month is zero-based, add 1 to get the correct month
+    const day = now.getDate();
+
+    // Pad the month and day with a leading zero if they are less than 10
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
+
+  const getDateDaysAgo = (days: number): string => {
+    const today = new Date();
+    today.setDate(today.getDate() - days);
+
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Month is zero-based, add 1 to get the correct month
+    const day = today.getDate();
+
+    // Pad the month and day with a leading zero if they are less than 10
+    const formattedMonth = month < 10 ? `0${month}` : month.toString();
+    const formattedDay = day < 10 ? `0${day}` : day.toString();
+
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
+
+  const getDaysAgo = (): number => {
+    switch (timeframe) {
+      case "1M":
+        return 30;
+      case "3M":
+        return 90;
+      case "6M":
+        return 180;
+      case "1Y":
+        return 365;
+      case "3Y":
+        return 1095;
+      case "5Y":
+        return 1825;
+      default:
+        return 30;
+    }
   };
 
   return (
@@ -386,6 +454,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
           }}
         >
           <Table
+            rowKey={"key"}
             columns={columns}
             dataSource={data || []}
             rowSelection={{}}
