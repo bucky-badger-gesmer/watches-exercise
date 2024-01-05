@@ -27,6 +27,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
   const [watchIds, setWatchIds] = useState([]);
   const [timeframe, setTimeframe] = useState("1M");
+  const [pastDaysCount, setPastDaysCount] = useState<number>(30);
+  const [pastDate, setPastDate] = useState<string>("");
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const onExpand = (expanded: boolean, record: DataType) => {
@@ -312,10 +314,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     const fetchDataForWatchId = async (id: string) => {
       try {
         const today = getCurrentDateFormatted();
-        const daysAgo = getDaysAgo();
-        const startDate = getDateDaysAgo(daysAgo);
         const response = await fetch(
-          `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${startDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,
+          `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${pastDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
@@ -377,7 +377,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-  const getDaysAgo = (): number => {
+  const getDaysAgo = (timeframe?: string): number => {
     switch (timeframe) {
       case "1M":
         return 30;
@@ -396,6 +396,15 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     }
   };
 
+  const handleSetTimeFrame = (timeframe: string): void => {
+    setTimeframe(timeframe);
+    const days = getDaysAgo(timeframe);
+    setPastDaysCount(days);
+    const pastDate = getDateDaysAgo(days);
+    setPastDate(pastDate);
+  };
+
+  console.log("fuck yeah", timeframe, pastDaysCount, pastDate);
   return (
     <div className="container">
       <div className="exploreContainer">
@@ -411,7 +420,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
           <Dropdown />
           <ul className="timeFilter">
             <li
-              onClick={() => setTimeframe("1M")}
+              onClick={() => handleSetTimeFrame("1M")}
               style={{
                 textDecoration: timeframe === "1M" ? "underline" : "none",
               }}
@@ -419,7 +428,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               1M
             </li>
             <li
-              onClick={() => setTimeframe("3M")}
+              onClick={() => handleSetTimeFrame("3M")}
               style={{
                 textDecoration: timeframe === "3M" ? "underline" : "none",
               }}
@@ -427,7 +436,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               3M
             </li>
             <li
-              onClick={() => setTimeframe("6M")}
+              onClick={() => handleSetTimeFrame("6M")}
               style={{
                 textDecoration: timeframe === "6M" ? "underline" : "none",
               }}
@@ -435,7 +444,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               6M
             </li>
             <li
-              onClick={() => setTimeframe("1Y")}
+              onClick={() => handleSetTimeFrame("1Y")}
               style={{
                 textDecoration: timeframe === "1Y" ? "underline" : "none",
               }}
@@ -443,7 +452,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               1Y
             </li>
             <li
-              onClick={() => setTimeframe("3Y")}
+              onClick={() => handleSetTimeFrame("3Y")}
               style={{
                 textDecoration: timeframe === "3Y" ? "underline" : "none",
               }}
@@ -451,7 +460,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               3Y
             </li>
             <li
-              onClick={() => setTimeframe("5Y")}
+              onClick={() => handleSetTimeFrame("5Y")}
               style={{
                 textDecoration: timeframe === "5Y" ? "underline" : "none",
               }}
