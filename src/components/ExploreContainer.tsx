@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 import Dropdown from "./Dropdown";
 import "./ExploreContainer.css";
+import WatchDetails from "./WatchDetails";
 
 interface DataType {
   key: string;
@@ -44,7 +45,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
       dataIndex: "image_url",
       key: "image_url",
       render: (image_url) => {
-        return <img src={image_url} width={150} />;
+        return <img src={image_url} width={150} alt="watch image" />;
       },
     },
     {
@@ -334,7 +335,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
 
     // Make API calls for each ID
     Promise.all(watchIds.map((id) => fetchDataForWatchId(id)));
-  }, [watchIds, timeframe]);
+  }, [watchIds]);
 
   const formatUSD = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -404,7 +405,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     setPastDate(pastDate);
   };
 
-  console.log("fuck yeah", timeframe, pastDaysCount, pastDate);
   return (
     <div className="container">
       <div className="exploreContainer">
@@ -489,17 +489,10 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
                   throw new Error("oh no");
                 }
                 const watchData = JSON.parse(item);
-                console.log("watchData", watchData);
                 return (
-                  <div className="detailsContainer">
-                    <div className="details">Details</div>
-                    <div className="detailsChart">Chart</div>
-                  </div>
+                  <WatchDetails watchData={watchData} timeframe={timeframe} />
                 );
               },
-              // rowExpandable: (record) => {
-              //   return true;
-              // },
             }}
           />
         </ConfigProvider>

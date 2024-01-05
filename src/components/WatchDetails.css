@@ -1,0 +1,29 @@
+.detailsContainer {
+  display: flex;
+
+  .details {
+    display: flex;
+    width: 50%;
+
+    .detailsData {
+      width: 100%;
+      .modelInfo {
+        display: flex;
+        justify-content: space-between;
+
+        .modelText {
+        }
+
+        .modelIcons {
+          margin: 0;
+        }
+      }
+
+      .priceInfo {
+      }
+    }
+  }
+  .detailsChart {
+    width: 50%;
+  }
+}
