@@ -47,7 +47,7 @@ const Dropdown: React.FC = () => {
         />
       </ConfigProvider>
 
-      {count > 0 && <div className="dropdownCount">+{count}</div>}
+      {count > 0 && count < 9 && <div className="dropdownCount">+{count}</div>}
       {count >= 9 && <div className="dropdownCount">{count}+</div>}
     </>
   );

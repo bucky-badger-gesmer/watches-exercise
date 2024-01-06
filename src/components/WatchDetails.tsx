@@ -76,6 +76,7 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
   }, []);
 
   const handleSetTimeFrame = (timeframe: string): void => {
+    console.log("handling...", timeframe);
     setCurrentTimeframe(timeframe);
     const days = getDaysAgo(timeframe);
     const today = getCurrentDateFormatted();
@@ -118,6 +119,13 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
       })
       .catch((err) => {});
   };
+
+  const currentClose = Object.keys(watchData.global_analytics).find(
+    (childKey) => childKey.includes(currentTimeframe.toLocaleLowerCase())
+  );
+  const currentAnalytics = watchData.global_analytics[currentClose as string];
+
+  console.log("currentAnalytics", currentAnalytics);
 
   return (
     <div className="detailsContainer">
@@ -167,7 +175,7 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
       <div className="detailsChartContainer">
         <div className="detailsChartHeader">
           <div className="detailsPrice">
-            <h3>{watchData.global_analytics.analytics_1d.close}</h3>
+            <h3>{formatUSD(closePrice)}</h3>
             <h2 style={{ color: chartColor }}>{percentageText}</h2>
           </div>
           <ul className="timeFilter">
