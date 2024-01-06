@@ -120,13 +120,6 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
       .catch((err) => {});
   };
 
-  const currentClose = Object.keys(watchData.global_analytics).find(
-    (childKey) => childKey.includes(currentTimeframe.toLocaleLowerCase())
-  );
-  const currentAnalytics = watchData.global_analytics[currentClose as string];
-
-  console.log("currentAnalytics", currentAnalytics);
-
   return (
     <div className="detailsContainer">
       <div className="details">
