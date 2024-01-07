@@ -35,7 +35,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
   const [watchIds, setWatchIds] = useState([]);
   const [timeframe, setTimeframe] = useState("1M");
-  const [pastDaysCount, setPastDaysCount] = useState<number>(30);
   const [pastDate, setPastDate] = useState<string>("");
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
@@ -347,7 +346,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const handleSetTimeFrame = (timeframe: string): void => {
     setTimeframe(timeframe);
     const days = getDaysAgo(timeframe);
-    setPastDaysCount(days);
     const pastDate = getDateDaysAgo(days);
     setPastDate(pastDate);
   };
