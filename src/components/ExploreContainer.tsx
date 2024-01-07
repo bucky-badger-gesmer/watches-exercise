@@ -220,7 +220,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
 
         const item = localStorage.getItem(global_analytics.watch_id);
         if (item === null) {
-          throw new Error("NO");
+          return;
         }
 
         const result = JSON.parse(item);
