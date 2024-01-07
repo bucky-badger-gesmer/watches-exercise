@@ -35,7 +35,11 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const [data, setData] = useState(null);
   const [watchIds, setWatchIds] = useState([]);
   const [timeframe, setTimeframe] = useState("1M");
-  const [pastDate, setPastDate] = useState<string>("");
+
+  const past = getDateDaysAgo(30);
+  console.log("past", past);
+
+  const [pastDate, setPastDate] = useState<string>(past);
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const onExpand = (expanded: boolean, record: DataType) => {
@@ -320,6 +324,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     // Function to fetch data for a given ID, write it local storage
     const fetchDataForWatchId = async (id: string) => {
       try {
+        console.log("trying...");
         const today = getCurrentDateFormatted();
         const response = await fetch(
           `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${pastDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,
@@ -331,7 +336,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
           }
         );
         const data = await response.json();
-        localStorage.setItem(data[0].watch.id, JSON.stringify(data[0]));
+        const writeWatchData = JSON.stringify(data[0]);
+        localStorage.setItem(data[0].watch.id, writeWatchData);
         return data;
       } catch (error) {
         console.error("Error fetching data for ID:", id, error);
@@ -431,12 +437,21 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               expandedRowRender: (record) => {
                 const item = localStorage.getItem(record.id);
                 if (item === null) {
-                  throw new Error("oh no");
+                  // Handle the case where the item is not found. You might return null or a placeholder.
+                  console.log("Item not found in localStorage");
+                  return null; // or <PlaceholderComponent /> or any other fallback UI
                 }
-                const watchData = JSON.parse(item);
-                return (
-                  <WatchDetails watchData={watchData} timeframe={timeframe} />
-                );
+
+                try {
+                  const watchData = JSON.parse(item);
+                  return (
+                    <WatchDetails watchData={watchData} timeframe={timeframe} />
+                  );
+                } catch (error) {
+                  // Handle JSON parsing error
+                  console.log("Error parsing JSON from localStorage", error);
+                  return null; // or <ErrorComponent /> or any other fallback UI
+                }
               },
             }}
           />
