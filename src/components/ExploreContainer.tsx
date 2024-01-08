@@ -37,7 +37,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
   const [timeframe, setTimeframe] = useState("1M");
 
   const past = getDateDaysAgo(30);
-  console.log("past", past);
 
   const [pastDate, setPastDate] = useState<string>(past);
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
@@ -324,7 +323,6 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
     // Function to fetch data for a given ID, write it local storage
     const fetchDataForWatchId = async (id: string) => {
       try {
-        console.log("trying...");
         const today = getCurrentDateFormatted();
         const response = await fetch(
           `https://api-dev.horodex.io/watch_data/api/v1/watchutility?watch_ids=${id}&start=${pastDate}&end=${today}&limit=-1&page=-1&orderBy=related_day&direction=asc`,

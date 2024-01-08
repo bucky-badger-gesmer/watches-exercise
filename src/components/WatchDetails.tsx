@@ -49,7 +49,6 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
         const xAxisCategories = response[0].daily_analytics.map(
           (o: any) => o.related_day
         );
-        console.log("xAxisCategories", xAxisCategories);
         const data = response[0].daily_analytics.map((o: any) => o.price);
         const currentAnalytics = Object.keys(response[0].global_analytics).find(
           (childKey) => childKey.includes(timeframe.toLocaleLowerCase())
@@ -77,7 +76,6 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
   }, []);
 
   const handleSetTimeFrame = (timeframe: string): void => {
-    console.log("handling...", timeframe);
     setCurrentTimeframe(timeframe);
     const days = getDaysAgo(timeframe);
     const today = getCurrentDateFormatted();
