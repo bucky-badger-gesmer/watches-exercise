@@ -133,7 +133,9 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
             <div className="modelText">
               <h3>{watchData.watch.model.manufacturer}</h3>
               <h1>{watchData.watch.model.model_name}</h1>
-              <p>{watchData.watch.reference_number}</p>
+              <p>
+                <strong>{watchData.watch.reference_number}</strong>
+              </p>
             </div>
             <hr />
             <div className="modelIcons">
@@ -160,15 +162,21 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
                   : "+" + formatUSD(closePrice - openPrice)}
               </h2>
             </div>
-            <Button style={{ width: "100%", marginTop: 150 }}>Details</Button>
+            <Button style={{ width: "100%", position: "absolute", bottom: 0 }}>
+              Details
+            </Button>
           </div>
         </div>
       </div>
       <div className="detailsChartContainer">
         <div className="detailsChartHeader">
           <div className="detailsPrice">
-            <h3>{formatUSD(closePrice)}</h3>
-            <h2 style={{ color: chartColor }}>{percentageText}</h2>
+            <h3>
+              <strong>{formatUSD(closePrice)}</strong>
+            </h3>
+            <h2 style={{ color: chartColor, fontWeight: "bolder" }}>
+              {percentageText}
+            </h2>
           </div>
           <ul className="timeFilter">
             <li
@@ -176,6 +184,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "1M" ? "underline" : "none",
+                color: currentTimeframe === "1M" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "1M" ? "bolder" : 100,
               }}
             >
               1M
@@ -185,6 +195,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "3M" ? "underline" : "none",
+                color: currentTimeframe === "3M" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "3M" ? "bolder" : 100,
               }}
             >
               3M
@@ -194,6 +206,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "6M" ? "underline" : "none",
+                color: currentTimeframe === "6M" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "6M" ? "bolder" : 100,
               }}
             >
               6M
@@ -203,6 +217,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "1Y" ? "underline" : "none",
+                color: currentTimeframe === "1Y" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "1Y" ? "bolder" : 100,
               }}
             >
               1Y
@@ -212,6 +228,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "3Y" ? "underline" : "none",
+                color: currentTimeframe === "3Y" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "3Y" ? "bolder" : 100,
               }}
             >
               3Y
@@ -221,6 +239,8 @@ const WatchDetails: React.FC<WatchDetailsProps> = ({
               style={{
                 textDecoration:
                   currentTimeframe === "5Y" ? "underline" : "none",
+                color: currentTimeframe === "5Y" ? "white" : "light-grey",
+                fontWeight: currentTimeframe === "5Y" ? "bolder" : 100,
               }}
             >
               5Y

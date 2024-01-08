@@ -4,9 +4,15 @@
   .details {
     display: flex;
     width: 50%;
-    margin: 10px;
+    margin: 12px;
+    padding: 12px;
+
+    img {
+      align-self: center;
+    }
 
     .detailsData {
+      position: relative;
       width: 100%;
       .modelInfo {
         display: flex;
@@ -16,7 +22,14 @@
         }
 
         .modelIcons {
-          margin: 0;
+          span {
+            margin-left: 6px;
+            margin-right: 6px;
+          }
+        }
+
+        .modelIcons:hover {
+          cursor: pointer;
         }
       }
 
@@ -32,7 +45,8 @@
   }
   .detailsChartContainer {
     width: 50%;
-    padding: 10px;
+    margin: 12px;
+    padding: 12px;
 
     .detailsChartHeader {
       display: flex;
