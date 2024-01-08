@@ -3,7 +3,6 @@ import { useState } from "react";
 import "./Dropdown.css";
 
 const Dropdown: React.FC = () => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [count, setCount] = useState<number>(0);
 
   const handleSelectChange = (value: string[]) => {
@@ -11,14 +10,15 @@ const Dropdown: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="dropdownContainer">
       <ConfigProvider
         theme={{
           algorithm: theme.darkAlgorithm,
         }}
       >
         <Select
-          style={{ width: "25%" }}
+          style={{ width: 200 }}
+          mode="multiple"
           defaultValue={["Select All"]}
           placeholder="Show All"
           onChange={handleSelectChange}
@@ -49,7 +49,7 @@ const Dropdown: React.FC = () => {
 
       {count > 0 && count < 9 && <div className="dropdownCount">+{count}</div>}
       {count >= 9 && <div className="dropdownCount">{count}+</div>}
-    </>
+    </div>
   );
 };
 

@@ -364,7 +364,7 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
             <IonTitle>Discover</IonTitle>
           </li>
           <li className="trending">
-            <IonTitle>Trending</IonTitle>
+            <IonTitle style={{ fontWeight: "bolder" }}>Trending</IonTitle>
           </li>
         </ul>
         <div className="graphFilter">
@@ -374,6 +374,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("1M")}
               style={{
                 textDecoration: timeframe === "1M" ? "underline" : "none",
+                color: timeframe === "1M" ? "white" : "light-grey",
+                fontWeight: timeframe === "1M" ? "bolder" : 100,
               }}
             >
               1M
@@ -382,6 +384,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("3M")}
               style={{
                 textDecoration: timeframe === "3M" ? "underline" : "none",
+                color: timeframe === "3M" ? "white" : "light-grey",
+                fontWeight: timeframe === "3M" ? "bolder" : 100,
               }}
             >
               3M
@@ -390,6 +394,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("6M")}
               style={{
                 textDecoration: timeframe === "6M" ? "underline" : "none",
+                color: timeframe === "6M" ? "white" : "light-grey",
+                fontWeight: timeframe === "6M" ? "bolder" : 100,
               }}
             >
               6M
@@ -398,6 +404,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("1Y")}
               style={{
                 textDecoration: timeframe === "1Y" ? "underline" : "none",
+                color: timeframe === "1Y" ? "white" : "light-grey",
+                fontWeight: timeframe === "1Y" ? "bolder" : 100,
               }}
             >
               1Y
@@ -406,6 +414,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("3Y")}
               style={{
                 textDecoration: timeframe === "3Y" ? "underline" : "none",
+                color: timeframe === "3Y" ? "white" : "light-grey",
+                fontWeight: timeframe === "3Y" ? "bolder" : 100,
               }}
             >
               3Y
@@ -414,6 +424,8 @@ const ExploreContainer: React.FC<ContainerProps> = () => {
               onClick={() => handleSetTimeFrame("5Y")}
               style={{
                 textDecoration: timeframe === "5Y" ? "underline" : "none",
+                color: timeframe === "5Y" ? "white" : "light-grey",
+                fontWeight: timeframe === "5Y" ? "bolder" : 100,
               }}
             >
               5Y

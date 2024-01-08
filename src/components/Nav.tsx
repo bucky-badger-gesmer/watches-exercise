@@ -16,13 +16,13 @@ const Nav: React.FC = () => {
           <li>NEWS</li>
         </ul>
       </div>
-      <div className="account">
+      <div className="accountContainer">
         <IonTitle>
-          <SearchOutlined />
-          {"    "}
-          <BellOutlined />
-          {"    "}
-          ACCOUNT
+          <div className="account">
+            <SearchOutlined />
+            <BellOutlined />
+            ACCOUNT
+          </div>
         </IonTitle>
       </div>
     </div>
